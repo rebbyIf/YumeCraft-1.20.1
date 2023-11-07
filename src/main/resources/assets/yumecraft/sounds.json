@@ -1,0 +1,10 @@
+{
+  "ambient.threshold": {
+    "sounds" : [
+      {
+        "name": "yumecraft:ambience_threshold",
+        "stream": true
+      }
+    ]
+  }
+}

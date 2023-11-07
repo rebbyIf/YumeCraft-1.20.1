@@ -1,0 +1,11 @@
+{
+  "type": "yumecraft:threshold",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "yumecraft:threshold",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "yumecraft:threshold"
+    }
+  }
+}

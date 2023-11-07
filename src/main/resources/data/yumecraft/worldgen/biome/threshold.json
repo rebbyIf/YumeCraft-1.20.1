@@ -1,0 +1,21 @@
+{
+  "temperature": 0,
+  "downfall": 0,
+  "has_precipitation": false,
+  "temperature_modifier": "none",
+  "creature_spawn_probability": 0,
+  "effects": {
+    "sky_color": 2500134,
+    "fog_color": 0,
+    "water_color": 0,
+    "water_fog_color": 0,
+    "grass_color_modifier": "none",
+    "ambient_sound": {
+      "sound_id": "yumecraft:ambient.threshold"
+    }
+  },
+  "spawners": {},
+  "spawn_costs": {},
+  "carvers": {},
+  "features": []
+}
