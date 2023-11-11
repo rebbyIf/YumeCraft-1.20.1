@@ -8,15 +8,19 @@
     },
     "set_template_pool" : {
       "templates" : {
-        "1" : "dimensional_library/bookcase"
+        "1" : "dimensional_library/bookcase",
+        "2" : "dimensional_library/bookcase_south",
+        "3" : "dimensional_library/bookcase_north",
+        "4" : "dimensional_library/bookcase_isolated"
       }
     },
     "settings": {
       "base" : 0,
       "floor" : 7,
-      "ceiling": 25,
+      "ceiling": 24,
       "height" : 31
-    }
+    },
+    "structural_noise" : "yumecraft:dimensional_library_structural_noise"
 
   }
 }

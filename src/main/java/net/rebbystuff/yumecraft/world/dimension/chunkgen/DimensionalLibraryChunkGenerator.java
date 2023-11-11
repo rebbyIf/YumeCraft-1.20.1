@@ -15,10 +15,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.rebbystuff.yumecraft.block.BuildingBlock;
 import net.rebbystuff.yumecraft.world.pool.SetTemplatePool;
 
@@ -46,12 +45,21 @@ public class DimensionalLibraryChunkGenerator extends StructureBasedChunkGenerat
                     return instance3.templatePool;
                 }), SETTINGS_CODEC.fieldOf("settings").forGetter(instance4 -> {
                     return instance4.settings;
+                }), NormalNoise.NoiseParameters.CODEC.fieldOf("structural_noise").forGetter(instance5 -> {
+                    return instance5.structureNoiseParameters;
                 })).apply(instance, instance.stable(DimensionalLibraryChunkGenerator::new));
             });
     private final Settings settings;
-    public DimensionalLibraryChunkGenerator(BiomeSource biomeSource, SetTemplatePool templatePool, Settings settings) {
+    private final Holder<NormalNoise.NoiseParameters> structureNoiseParameters;
+
+    private NormalNoise structureNoise;
+
+
+    public DimensionalLibraryChunkGenerator(BiomeSource biomeSource, SetTemplatePool templatePool,
+            Settings settings, Holder<NormalNoise.NoiseParameters> structureNoiseParameters) {
         super(biomeSource, templatePool);
         this.settings = settings;
+        this.structureNoiseParameters = structureNoiseParameters;
     }
 
 
@@ -67,6 +75,11 @@ public class DimensionalLibraryChunkGenerator extends StructureBasedChunkGenerat
 
     @Override
     public void buildSurface(WorldGenRegion pLevel, StructureManager pStructureManager, RandomState pRandom, ChunkAccess pChunk) {
+        // Initializes normal noise in structureNoise
+        if (structureNoise == null) {
+            structureNoise = NormalNoise.create(pLevel.getRandom(), structureNoiseParameters.value());
+        }
+
         BlockState bedrock = Blocks.BEDROCK.defaultBlockState();
         BlockState oak_planks = Blocks.OAK_PLANKS.defaultBlockState();
 
@@ -85,7 +98,25 @@ public class DimensionalLibraryChunkGenerator extends StructureBasedChunkGenerat
             }
         }
 
-        List<BuildingBlock> structure = templatePool.getSetStructure("1", pLevel.getLevel(), pLevel.getLevel());
+
+        String key = "0";
+        boolean is = structureNoise.getValue(pChunk.getPos().x, 0, pChunk.getPos().z) > 0;
+        boolean isNorth = structureNoise.getValue(pChunk.getPos().x, 0, pChunk.getPos().z - 1) > 0;
+        boolean isSouth = structureNoise.getValue(pChunk.getPos().x, 0, pChunk.getPos().z + 1) > 0;
+
+        if (is) {
+            if (isNorth && isSouth) {
+                key = "1";
+            } else if (isNorth) {
+                key = "2";
+            } else if (isSouth) {
+                key = "3";
+            } else {
+                key = "4";
+            }
+        }
+
+        List<BuildingBlock> structure = templatePool.getSetStructure(key, pLevel.getLevel(), pLevel.getLevel());
 
         Vec3i startPos = new Vec3i(pChunk.getPos().getMinBlockX(), settings.floor, pChunk.getPos().getMinBlockZ());
 
