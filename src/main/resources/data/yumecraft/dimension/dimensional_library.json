@@ -1,0 +1,22 @@
+{
+  "type": "yumecraft:dimensional_library",
+  "generator": {
+    "type": "yumecraft:dimensional_library_chunkgen",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "yumecraft:dimensional_library"
+    },
+    "set_template_pool" : {
+      "templates" : {
+        "1" : "dimensional_library/bookcase"
+      }
+    },
+    "settings": {
+      "base" : 0,
+      "floor" : 7,
+      "ceiling": 25,
+      "height" : 31
+    }
+
+  }
+}

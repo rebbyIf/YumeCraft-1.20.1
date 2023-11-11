@@ -1,22 +1,37 @@
 package net.rebbystuff.yumecraft.world.dimension;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.telemetry.events.WorldLoadEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.gametest.framework.GameTestRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.WorldLoader;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.rebbystuff.yumecraft.YumeCraftMod;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
+import net.rebbystuff.yumecraft.setup.Registration;
 import net.rebbystuff.yumecraft.world.Clone;
+import net.rebbystuff.yumecraft.world.dimension.chunkgen.DimensionalLibraryChunkGenerator;
 
 
 public class Dimensions {
@@ -27,11 +42,24 @@ public class Dimensions {
     public static final ResourceKey<DimensionType> THRESHOLD_DIM_TYPE =
             ResourceKey.create(Registries.DIMENSION_TYPE, THRESHOLD_DIM_KEY.location());
 
+    public static final ResourceKey<Level> DIMENSIONAL_LIBRARY_DIM_KEY =
+            ResourceKey.create(Registries.DIMENSION, new ResourceLocation(YumeCraftMod.MOD_ID, "dimensional_library"));
+
+    public static final ResourceKey<DimensionType> DIMENSIONAL_LIBRARY_DIM_TYPE =
+            ResourceKey.create(Registries.DIMENSION_TYPE, THRESHOLD_DIM_KEY.location());
+
 
     public static void register() {
         IEventBus eventBus = MinecraftForge.EVENT_BUS;
         eventBus.addListener(Dimensions::playerWakeUpEvent);
         System.out.println("Registering ModDimension for " + YumeCraftMod.MOD_ID);
+        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, new ResourceLocation(YumeCraftMod.MOD_ID,
+                "dimensional_library_chunkgen"), DimensionalLibraryChunkGenerator.CODEC);
+
+    }
+
+    public static void worldLoadEvent(GatherDataEvent event) {
+
     }
 
     @SubscribeEvent

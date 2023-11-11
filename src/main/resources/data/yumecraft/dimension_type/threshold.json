@@ -9,6 +9,7 @@
   "has_ceiling": false,
   "coordinate_scale": 1,
   "ambient_light": 0.01,
+  "fixed_time": 6000,
   "logical_height": 64,
   "effects": "minecraft:the_nether",
   "infiniburn": "#minecraft:infiniburn_overworld",
