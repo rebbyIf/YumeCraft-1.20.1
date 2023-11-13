@@ -1,9 +1,8 @@
-package net.rebbystuff.yumecraft.nbt;
+package net.rebbystuff.yumecraft.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -19,7 +18,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.rebbystuff.yumecraft.YumeCraftMod;
-import net.rebbystuff.yumecraft.block.BuildingBlock;
 
 import java.util.ArrayList;
 import java.util.Optional;

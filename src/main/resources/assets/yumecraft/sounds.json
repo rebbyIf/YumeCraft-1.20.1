@@ -1,4 +1,12 @@
 {
+  "music.dimensional_library": {
+    "sounds" : [
+      {
+        "name": "yumecraft:dark_museum",
+        "stream" : true
+      }
+    ]
+  },
   "ambient.threshold": {
     "sounds" : [
       {

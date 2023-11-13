@@ -1,4 +1,4 @@
-package net.rebbystuff.yumecraft.block;
+package net.rebbystuff.yumecraft.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;

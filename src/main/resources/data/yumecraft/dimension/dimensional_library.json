@@ -12,7 +12,13 @@
         "2" : "dimensional_library/bookcase_south",
         "3" : "dimensional_library/bookcase_north",
         "4" : "dimensional_library/bookcase_isolated"
-      }
+      },
+      "processors" : [
+        {
+          "filter" : "minecraft:air",
+          "chance" : 1.0
+        }
+      ]
     },
     "settings": {
       "base" : 0,
@@ -20,7 +26,8 @@
       "ceiling": 24,
       "height" : 31
     },
-    "structural_noise" : "yumecraft:dimensional_library_structural_noise"
+    "structural_noise" : "yumecraft:dimensional_library_structural_noise",
+    "carpet_noise" : "yumecraft:dimensional_library_carpet_noise"
 
   }
 }

@@ -18,7 +18,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
-import net.rebbystuff.yumecraft.block.BuildingBlock;
+import net.rebbystuff.yumecraft.util.BuildingBlock;
 import net.rebbystuff.yumecraft.world.pool.SetTemplatePool;
 
 import java.util.List;
@@ -55,6 +55,8 @@ public class DimensionalLibraryChunkGenerator extends StructureBasedChunkGenerat
     private NormalNoise structureNoise;
 
 
+
+
     public DimensionalLibraryChunkGenerator(BiomeSource biomeSource, SetTemplatePool templatePool,
             Settings settings, Holder<NormalNoise.NoiseParameters> structureNoiseParameters) {
         super(biomeSource, templatePool);
@@ -75,13 +77,14 @@ public class DimensionalLibraryChunkGenerator extends StructureBasedChunkGenerat
 
     @Override
     public void buildSurface(WorldGenRegion pLevel, StructureManager pStructureManager, RandomState pRandom, ChunkAccess pChunk) {
-        // Initializes normal noise in structureNoise
+        // Initializes noise
         if (structureNoise == null) {
             structureNoise = NormalNoise.create(pLevel.getRandom(), structureNoiseParameters.value());
         }
 
         BlockState bedrock = Blocks.BEDROCK.defaultBlockState();
         BlockState oak_planks = Blocks.OAK_PLANKS.defaultBlockState();
+        BlockState red_carpet = Blocks.RED_CARPET.defaultBlockState();
 
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
@@ -91,6 +94,7 @@ public class DimensionalLibraryChunkGenerator extends StructureBasedChunkGenerat
                 for (int y = settings.base + 1; y < settings.floor; y++){
                     pChunk.setBlockState(pos.set(x, y, z), oak_planks, false);
                 }
+                pChunk.setBlockState(pos.set(x, settings.floor, z), red_carpet, false);
                 for (int y = settings.ceiling; y < settings.height; y++){
                     pChunk.setBlockState(pos.set(x, y, z), oak_planks, false);
                 }
@@ -100,20 +104,31 @@ public class DimensionalLibraryChunkGenerator extends StructureBasedChunkGenerat
 
 
         String key = "0";
-        boolean is = structureNoise.getValue(pChunk.getPos().x, 0, pChunk.getPos().z) > 0;
-        boolean isNorth = structureNoise.getValue(pChunk.getPos().x, 0, pChunk.getPos().z - 1) > 0;
-        boolean isSouth = structureNoise.getValue(pChunk.getPos().x, 0, pChunk.getPos().z + 1) > 0;
 
-        if (is) {
-            if (isNorth && isSouth) {
+        boolean [][] isLoc = new boolean[3][3];
+        boolean hasNeighbors = false;
+
+        for (int x = 0; x < 3; x++) {
+            for (int z = 0; z < 3; z++) {
+                isLoc[x][z] = structureNoise.getValue(pChunk.getPos().x + x - 1, 0, pChunk.getPos().z + z -1) < 0;
+                if (isLoc[x][z]) {
+                    hasNeighbors = true;
+                }
+            }
+        }
+
+        if (isLoc[1][1]) {
+            if (isLoc[1][0] && isLoc[1][2]) {
                 key = "1";
-            } else if (isNorth) {
+            } else if (isLoc[1][0]) {
                 key = "2";
-            } else if (isSouth) {
+            } else if (isLoc[1][2]) {
                 key = "3";
             } else {
                 key = "4";
             }
+        } else if (!hasNeighbors && pChunk.getPos().x % 2 == 0 && pChunk.getPos().z % 2 == 0) {
+            key = "4";
         }
 
         List<BuildingBlock> structure = templatePool.getSetStructure(key, pLevel.getLevel(), pLevel.getLevel());
@@ -122,7 +137,10 @@ public class DimensionalLibraryChunkGenerator extends StructureBasedChunkGenerat
 
         if (structure != null) {
             for (BuildingBlock block : structure){
-                pChunk.setBlockState(block.getPos().offset(startPos), block.getState(), false);
+                BlockState state = templatePool.process(block.getState(), pLevel.getRandom());
+                if (state != null) {
+                    pChunk.setBlockState(block.getPos().offset(startPos), state, false);
+                }
             }
         }
 

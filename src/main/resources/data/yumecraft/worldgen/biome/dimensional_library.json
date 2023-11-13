@@ -9,7 +9,10 @@
     "fog_color": 0,
     "water_color": 0,
     "water_fog_color": 0,
-    "grass_color_modifier": "none"
+    "grass_color_modifier": "none",
+    "ambient_sound": {
+      "sound_id": "yumecraft:music.dimensional_library"
+    }
   },
   "spawners": {},
   "spawn_costs": {},

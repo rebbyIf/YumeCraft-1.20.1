@@ -1,36 +1,43 @@
 package net.rebbystuff.yumecraft.world.pool;
 
-import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.ints.IntLists;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.RegistryFileCodec;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.rebbystuff.yumecraft.block.BuildingBlock;
-import net.rebbystuff.yumecraft.nbt.GetNBT;
-import net.rebbystuff.yumecraft.setup.Registration;
+import net.minecraft.world.level.block.state.BlockState;
+import net.rebbystuff.yumecraft.util.BuildingBlock;
+import net.rebbystuff.yumecraft.util.GetNBT;
+import net.rebbystuff.yumecraft.util.processer.BlockProcessor;
+import net.rebbystuff.yumecraft.util.processer.BlockRemovalProcessor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class SetTemplatePool {
 
-    public static final Codec<SetTemplatePool> CODEC = RecordCodecBuilder.create(
-            instance -> instance.group(
-                    Codec.unboundedMap(Codec.STRING, Codec.STRING).fieldOf("templates").forGetter(instance2 -> {
-                        return instance2.templates;
-                    })
-            ).apply(instance, SetTemplatePool::new)
-    );
+    public static Codec<SetTemplatePool> CODEC = RecordCodecBuilder.create(
+    instance -> instance.group(
+            Codec.unboundedMap(Codec.STRING, Codec.STRING).fieldOf("templates").forGetter(instance2 -> {
+                return instance2.templates;
+            }),
+            BlockRemovalProcessor.CODEC.listOf().fieldOf("processors").forGetter(instance2 -> {
+                return instance2.processors;
+            })).apply(instance, SetTemplatePool::new)
+        );
 
 
-    private Map<String, String> templates;
-    private Map<String, List<BuildingBlock>> structues;
-    public SetTemplatePool(Map<String, String> templates){
+    private final Map<String, String> templates;
+    private final Map<String, List<BuildingBlock>> structues;
+
+    private final List<BlockRemovalProcessor> processors;
+
+    public static void prepCodec(){
+
+    }
+    public SetTemplatePool(Map<String, String> templates, List<BlockRemovalProcessor> processors){
         this.templates = templates;
+        this.processors = processors;
         structues = new HashMap<>();
     }
 
@@ -45,6 +52,18 @@ public class SetTemplatePool {
             return unmodifiableStructure;
         }
         return null;
+    }
+
+    @Nullable
+    public BlockState process(BlockState block, RandomSource random) {
+        BlockState currentBlock = block;
+        for (BlockProcessor processor : processors){
+            currentBlock = processor.process(currentBlock, random);
+            if (currentBlock == null){
+                break;
+            }
+        }
+        return currentBlock;
     }
 
 

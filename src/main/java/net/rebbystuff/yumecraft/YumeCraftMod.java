@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.NewRegistryEvent;
 import net.rebbystuff.yumecraft.setup.Registration;
 import net.rebbystuff.yumecraft.world.dimension.Dimensions;
 import org.slf4j.Logger;
@@ -26,7 +27,10 @@ public class YumeCraftMod
     private static final Logger LOGGER = LogUtils.getLogger();
     public YumeCraftMod()
     {
+
+
         Registration.init();
+
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // Register the commonSetup method for modloading
@@ -36,23 +40,21 @@ public class YumeCraftMod
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
-        modEventBus.addListener(YumeCraftMod::init);
-
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
 
 
+
     }
 
-    public static void init(FMLCommonSetupEvent event){
-        Dimensions.register();
-    }
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
+        Dimensions.register();
+
 
     }
 
@@ -76,6 +78,12 @@ public class YumeCraftMod
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
+
+
+        }
+
+        @SubscribeEvent
+        public static void onNewRegistry(NewRegistryEvent event){
 
         }
     }

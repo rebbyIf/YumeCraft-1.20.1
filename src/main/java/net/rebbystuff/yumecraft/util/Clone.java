@@ -1,14 +1,8 @@
-package net.rebbystuff.yumecraft.world;
+package net.rebbystuff.yumecraft.util;
 
 import com.google.common.collect.Lists;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.commands.CloneCommands;
-import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.level.GameRules;
@@ -16,7 +10,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.rebbystuff.yumecraft.exceptions.FailureException;
 import net.rebbystuff.yumecraft.exceptions.world.AreaTooLargeException;
@@ -26,7 +19,6 @@ import net.rebbystuff.yumecraft.exceptions.world.VolumeOverlappingException;
 import javax.annotation.Nullable;
 import java.util.Deque;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class Clone {
 
